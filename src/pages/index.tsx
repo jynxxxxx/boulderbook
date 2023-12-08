@@ -13,34 +13,44 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-10 border-b pt-2">
-        <div className="header mb-2">Home</div>
-        {session.status === "authenticated" && (
-          <div className="flex">{Tabs.map((tab) => {
-            return (
-              <button
-                key={tab}
-                className={`flex-grow p-2 hover:bg-gray-200 focus-visible:bg-gray-200 
+      {session.status === "authenticated"
+        ?
+        <>
+          <header className="sticky top-0 z-10 border-b pt-2 bg-white">
+            <div className="header mb-2">Home</div>
+
+            <div className="flex">{Tabs.map((tab) => {
+              return (
+                <button
+                  key={tab}
+                  className={`flex-grow p-2 hover:bg-gray-200 focus-visible:bg-gray-200 
                   ${tab === selectedTab
-                    ? "border-b-4 border-b-blue-500 font-bold"
-                    : ""
-                  }`}
-                onClick={() => setSelectedTab(tab)}
-              >
-                {tab}
-              </button>
-            )
-          })}
-          </div>
-        )}
-      </header>
-      <NewPostForm />
+                      ? "border-b-4 border-b-blue-500 font-bold"
+                      : ""
+                    }`}
+                  onClick={() => setSelectedTab(tab)}
+                >
+                  {tab}
+                </button>
+              )
+            })}
+            </div>
+          </header>
+          <NewPostForm />
 
-      {selectedTab === "Recent"
-        ? <RecentPosts />
-        : <FriendsPosts />
+          {selectedTab === "Recent"
+            ? <RecentPosts />
+            : <FriendsPosts />
+          }
+        </>
+        :
+        <>
+          <header className="sticky top-0 z-10 border-b pt-2">
+            <div className="header mb-2">Home</div>
+          </header>
+          <div>empty</div>
+        </>
       }
-
     </>
   )
 }

@@ -7,6 +7,7 @@ import Head from "next/head";
 
 import "~/styles/globals.css";
 import { SideNav } from "~/components/SideNav";
+import '../styles/signup.css'
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

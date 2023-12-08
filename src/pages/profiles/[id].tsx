@@ -10,6 +10,7 @@ import { ProfileImage } from "~/components/ProfileImage";
 import { AllPosts } from "~/components/AllPosts";
 import { Button } from "~/components/Button";
 import { useSession } from "next-auth/react";
+import { SideNav } from "~/components/SideNav";
 
 
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ id }) => {
@@ -46,37 +47,40 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       <Head>
         <title>{`BoulderBook - ${profile.name}`}</title>
       </Head>
-      <header className="sticky top-0 z-10 flex items-center border-b bg-white px-4 py-2">
-        <Link href=".." className="mr-2">
-          <IconHoverEffect>
-            <VscArrowLeft className="h-6 w-6" />
-          </IconHoverEffect>
-        </Link>
-        <ProfileImage src={profile.image} className="flex-shrink-0" />
-        <div className="ml-2 flex-grow">
-          <h1 className="text-lg font-bold"> {profile.name} </h1>
-          <div className="text-gray-500">
-            {profile.postsCount}{" "}
-            {getPlural(profile.postsCount, "Post", "Posts")} - {" "}
-            {profile.friendsCount}{" "}
-            {getPlural(profile.friendsCount, "Friend", "Friends")}
+      <SideNav />
+      <div className="min-h-screen flex-grow border-x">
+        <header className="sticky top-0 z-10 flex items-center border-b bg-white px-4 py-2">
+          <Link href=".." className="mr-2">
+            <IconHoverEffect>
+              <VscArrowLeft className="h-6 w-6" />
+            </IconHoverEffect>
+          </Link>
+          <ProfileImage src={profile.image} className="flex-shrink-0" />
+          <div className="ml-2 flex-grow">
+            <h1 className="text-lg font-bold"> {profile.name} </h1>
+            <div className="text-gray-500">
+              {profile.postsCount}{" "}
+              {getPlural(profile.postsCount, "Post", "Posts")} - {" "}
+              {profile.friendsCount}{" "}
+              {getPlural(profile.friendsCount, "Friend", "Friends")}
+            </div>
           </div>
-        </div>
-        <AddFriendButton
-          areFriends={profile.areFriends}
-          isLoading={toggleFriend.isLoading}
-          userId={id}
-          onClick={() => toggleFriend.mutate({ userId: id })} />
-      </header>
-      <main>
-        <AllPosts
-          posts={posts.data?.pages.flatMap((page) => page.posts)}
-          isError={posts.isError}
-          isLoading={posts.isLoading}
-          hasMore={posts.hasNextPage ?? false}
-          fetchNewPosts={posts.fetchNextPage}
-        />
-      </main>
+          <AddFriendButton
+            areFriends={profile.areFriends}
+            isLoading={toggleFriend.isLoading}
+            userId={id}
+            onClick={() => toggleFriend.mutate({ userId: id })} />
+        </header>
+        <main>
+          <AllPosts
+            posts={posts.data?.pages.flatMap((page) => page.posts)}
+            isError={posts.isError}
+            isLoading={posts.isLoading}
+            hasMore={posts.hasNextPage ?? false}
+            fetchNewPosts={posts.fetchNextPage}
+          />
+        </main>
+      </div>
     </>
   )
 }
