@@ -48,7 +48,7 @@ const Home: NextPage = () => {
           <header className="sticky top-0 z-10 border-b pt-2">
             <div className="header mb-2">Home</div>
           </header>
-          <div>empty</div>
+          <RecentPosts />
         </>
       }
     </>

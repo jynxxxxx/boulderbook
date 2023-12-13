@@ -33,10 +33,10 @@ export const postRouter = createTRPCRouter({
         cursor: z.object({ createdAt: z.date(), id: z.string() }).optional()
       })
     ).query(async ({
-      input: { limit = 10, onlyFriends = false, cursor },
+      input: { limit = 6, onlyFriends = false, cursor },
       ctx, }) => {
       const currentUserId = ctx.session?.user.id
-
+      console.log(`currentid: ${currentUserId}`)
       return await GetAllPosts({
         limit, ctx, cursor,
         whereClause: currentUserId == null || !onlyFriends

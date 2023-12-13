@@ -10,6 +10,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
+import bcrypt from 'bcrypt';
+import NextAuth from "next-auth/next";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -19,11 +21,9 @@ import { db } from "~/server/db";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: DefaultSession["user"] & {
+    user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
-    };
+    } & DefaultSession["user"];
   }
 
   // interface User {
@@ -38,42 +38,63 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async jwt({ token, account, user }) {
+      console.log('Token object in jwt():', token);
+
+      // Persist the OAuth access_token and or the user id to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token;
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.image = user.image
+      }
+      return token;
+    },
+    async session({ session, token, user }) {
+      if (token.id && typeof token.id === 'string') {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = user.image
+      }
+
+      return session;
+    },
   },
   adapter: PrismaAdapter(db),
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
-      name: "Username",
-      // `credentials` is used to generate a form on the sign in page.
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
+      name: 'Credentials',
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
-        password: { label: "Password", type: "password" }
+        username: { label: 'Username', type: 'text', placeholder: 'username' },
+        password: { label: 'Password', type: 'password', placeholder: 'password' },
       },
-      async authorize(credentials, req) {
-        // Add logic here to look up the user from the credentials supplied
-        const user = { id: "1", name: "J Smith", email: "jsmith@example.com" }
+      async authorize(credentials) {
+        try {
+          console.log(credentials)
 
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null
+          const user = await db.user.findUnique({ where: { name: credentials?.username } });
 
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+          if (user) {
+            const match = await bcrypt.compare(credentials?.password ?? '', user.password!);
+
+            if (match) {
+              return user
+            }
+          }
+
+          return null;
+        } catch (error) {
+          console.error('Error processing request:', error);
+          console.log('other');
+          return null;
         }
-      }
+      },
     }),
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
@@ -90,6 +111,7 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+
 };
 
 /**
@@ -103,3 +125,6 @@ export const getServerAuthSession = (ctx: {
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
+
+const handler = NextAuth(authOptions)
+export { handler as GET, handler as POST }

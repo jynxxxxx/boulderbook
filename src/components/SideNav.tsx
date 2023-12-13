@@ -8,6 +8,11 @@ export function SideNav() {
   const session = useSession()
 
   const user = session.data?.user
+  // console.log(user)
+  console.log(user)
+
+  console.log("Session:", session);
+
 
   return (
 
