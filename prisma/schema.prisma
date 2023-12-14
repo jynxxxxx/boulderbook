@@ -103,8 +103,8 @@ model User {
     //non next-Auth
     posts     Post[]
     likes     Like[]
-    friends   User[]    @relation("friends")
-    friendsOf User[]    @relation("friends")
+    following User[]    @relation("followers")
+    followers User[]    @relation("followers")
     comments  Comment[]
 }
 

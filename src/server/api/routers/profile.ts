@@ -19,12 +19,12 @@ export const profileRouter = createTRPCRouter({
           image: true,
           _count: {
             select: {
-              friends: true,
-              friendsOf: true,
+              following: true,
+              followers: true,
               posts: true
             }
           },
-          friends: currentUserId == null
+          followers: currentUserId == null
             ? undefined
             : { where: { id: currentUserId } }
         }
@@ -35,35 +35,36 @@ export const profileRouter = createTRPCRouter({
       return {
         name: profile.name,
         image: profile.image,
-        friendsCount: profile._count.friends,
+        followingCount: profile._count.following,
+        followersCount: profile._count.followers,
         postsCount: profile._count.posts,
-        areFriends: profile.friends.length > 0
+        isFollowing: profile.followers.length > 0
       }
     }),
-  toggleFriend: protectedProcedure
+  toggleFollow: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .mutation(
       async ({ input: { userId }, ctx }) => {
         const currentUserId = ctx.session.user.id
 
-        const existingFriend = await ctx.db.user.findFirst({
-          where: { id: userId, friends: { some: { id: currentUserId } } }
+        const existingFollow = await ctx.db.user.findFirst({
+          where: { id: userId, followers: { some: { id: currentUserId } } }
         })
 
-        let addedFriend
+        let addedFollow
 
-        if (existingFriend == null) {
+        if (existingFollow == null) {
           await ctx.db.user.update({
             where: { id: userId },
-            data: { friends: { connect: { id: currentUserId } } }
+            data: { followers: { connect: { id: currentUserId } } }
           })
-          addedFriend = true
+          addedFollow = true
         } else {
           await ctx.db.user.update({
             where: { id: userId },
-            data: { friends: { disconnect: { id: currentUserId } } }
+            data: { followers: { disconnect: { id: currentUserId } } }
           })
-          addedFriend = false
+          addedFollow = false
         }
 
         // Revalidation
@@ -71,7 +72,7 @@ export const profileRouter = createTRPCRouter({
         void ctx.revalidateSSG?.(`/profiles/${currentUserId}`)
 
 
-        return { addedFriend }
+        return { addedFollow }
       }
     )
 })

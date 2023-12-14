@@ -21,17 +21,17 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   const trcpUtils = api.useUtils()
 
-  const toggleFriend = api.profile.toggleFriend.useMutation({
-    onSuccess: ({ addedFriend }) => {
+  const toggleFollow = api.profile.toggleFollow.useMutation({
+    onSuccess: ({ addedFollow }) => {
       trcpUtils.profile.getById.setData({ id }, oldData => {
         if (oldData == null) return
 
-        const countModifier = addedFriend ? 1 : -1
+        const countModifier = addedFollow ? 1 : -1
 
         return {
           ...oldData,
-          areFriends: addedFriend,
-          friendsCount: oldData.friendsCount + countModifier
+          isFollowing: addedFollow,
+          followersCount: oldData.followersCount + countModifier
         }
       })
     }
@@ -58,16 +58,17 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             <h1 className="text-lg font-bold"> {profile.name} </h1>
             <div className="text-gray-500">
               {profile.postsCount}{" "}
-              {getPlural(profile.postsCount, "Post", "Posts")} - {" "}
-              {profile.friendsCount}{" "}
-              {getPlural(profile.friendsCount, "Friend", "Friends")}
+              {getPlural(Number(profile.postsCount), "Post", "Posts")} - {" "}
+              {profile.followersCount}{" "}
+              {getPlural(Number(profile.followersCount), "Follower", "Followers")} - {" "}
+              {profile.followingCount} Following
             </div>
           </div>
-          <AddFriendButton
-            areFriends={profile.areFriends}
-            isLoading={toggleFriend.isLoading}
+          <AddFollowButton
+            isFollowing={profile.isFollowing}
+            isLoading={toggleFollow.isLoading}
             userId={id}
-            onClick={() => toggleFriend.mutate({ userId: id })} />
+            onClick={() => toggleFollow.mutate({ userId: id })} />
         </header>
         <main>
           <AllPosts
@@ -83,18 +84,18 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   )
 }
 
-function AddFriendButton({ userId, areFriends, isLoading, onClick }: {
+function AddFollowButton({ userId, isFollowing, isLoading, onClick }: {
   userId: string,
-  areFriends: boolean,
+  isFollowing: boolean,
   onClick: () => void,
   isLoading: boolean
 }) {
   const session = useSession()
-  if (session.status !== "authenticated" || session.data.user.id) {
+  if (session.status !== "authenticated" || session.data.user.id === userId) {
     return null
   }
-  return <Button disabled={isLoading} onClick={onClick} small gray={areFriends}>
-    {areFriends ? "Remove Friend" : "Add Friend"}
+  return <Button disabled={isLoading} onClick={onClick} small gray={isFollowing}>
+    {isFollowing ? "Unfollow" : "Follow"}
   </Button>
 }
 

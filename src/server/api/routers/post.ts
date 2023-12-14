@@ -28,22 +28,22 @@ export const postRouter = createTRPCRouter({
   infiniteFeed: publicProcedure
     .input(
       z.object({
-        onlyFriends: z.boolean().optional(),
+        onlyFollowing: z.boolean().optional(),
         limit: z.number().optional(),
         cursor: z.object({ createdAt: z.date(), id: z.string() }).optional()
       })
     ).query(async ({
-      input: { limit = 6, onlyFriends = false, cursor },
+      input: { limit = 10, onlyFollowing = false, cursor },
       ctx, }) => {
       const currentUserId = ctx.session?.user.id
       console.log(`currentid: ${currentUserId}`)
       return await GetAllPosts({
         limit, ctx, cursor,
-        whereClause: currentUserId == null || !onlyFriends
+        whereClause: currentUserId == null || !onlyFollowing
           ? undefined
           : {
             user: {
-              friends: { some: { id: currentUserId } },
+              followers: { some: { id: currentUserId } },
             }
           }
       })
@@ -127,7 +127,7 @@ async function GetAllPosts({
         createdAt: post.createdAt,
         likeCount: post._count.likes,
         user: post.user,
-        likedByMe: post.likes.length > 0,
+        likedByMe: post.likes?.length > 0 ?? false,
       }
     }), nextCursor
   }

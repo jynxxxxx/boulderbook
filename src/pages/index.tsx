@@ -5,7 +5,7 @@ import { AllPosts } from "~/components/AllPosts"
 import { NewPostForm } from "~/components/NewPostForm"
 import { api } from "~/utils/api"
 
-const Tabs = ["Recent", "Friends"] as const
+const Tabs = ["Recent", "Following"] as const
 
 const Home: NextPage = () => {
   const session = useSession()
@@ -40,7 +40,7 @@ const Home: NextPage = () => {
 
           {selectedTab === "Recent"
             ? <RecentPosts />
-            : <FriendsPosts />
+            : <FollowingPosts />
           }
         </>
         :
@@ -73,9 +73,9 @@ function RecentPosts() {
   )
 }
 
-function FriendsPosts() {
+function FollowingPosts() {
   const posts = api.post.infiniteFeed.useInfiniteQuery(
-    { onlyFriends: true },
+    { onlyFollowing: true },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   )
 

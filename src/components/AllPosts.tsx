@@ -87,7 +87,7 @@ function PostCard({ id, content, createdAt, likeCount, likedByMe, user }: Post) 
         }
 
         trcpUtils.post.infiniteFeed.setInfiniteData({}, updateData)
-        trcpUtils.post.infiniteFeed.setInfiniteData({ onlyFriends: true }, updateData)
+        trcpUtils.post.infiniteFeed.setInfiniteData({ onlyFollowing: true }, updateData)
         trcpUtils.post.infiniteProfileFeed.setInfiniteData({ userId: user.id }, updateData)
       }
     })
