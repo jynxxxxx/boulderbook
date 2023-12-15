@@ -21,7 +21,7 @@ export function SideNav() {
     <>
       {session.status === "authenticated"
         ?
-        <nav className="sticky top-0 px-2 py-4 w-1/5 h-full border-x">
+        <nav className="mainbar sticky px-2 py-4 w-1/5 h-full border-x">
           <ul className="flex flex-col items-start gap-2 whitespace-nowrap ">
             <li>
               <Link href="/">
@@ -44,7 +44,10 @@ export function SideNav() {
               </Link>
             </li>}
             <li>
-              <button onClick={() => void signOut()}>
+              <button onClick={async () => {
+                await signOut();
+                window.location.href = "/";
+              }}>
                 <IconHoverEffect>
                   <span className="flex items-center gap-4">
                     <VscSignOut className="h-8 w-8 fill-red-700" />
