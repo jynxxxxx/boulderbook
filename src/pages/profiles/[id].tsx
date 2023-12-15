@@ -10,6 +10,7 @@ import { ProfileImage } from "~/components/ProfileImage";
 import { AllPosts } from "~/components/AllPosts";
 import { Button } from "~/components/Button";
 import { useSession } from "next-auth/react";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
 
 
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ id }) => {
@@ -37,7 +38,11 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     }
   })
 
-  if (profile?.name == null) {
+  if (!profile) {
+    return <LoadingSpinner />
+  }
+
+  if (profile.name == null) {
     return <ErrorPage statusCode={404} />
   }
 

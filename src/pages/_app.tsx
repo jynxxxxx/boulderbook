@@ -8,7 +8,6 @@ import Head from "next/head";
 import "~/styles/globals.css";
 import { SideNav } from "~/components/SideNav";
 import '../styles/vanilla.css'
-import { LoadingSpinner } from "~/components/LoadingSpinner";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

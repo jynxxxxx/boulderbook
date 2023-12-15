@@ -1,13 +1,12 @@
 :root {
-  --titlefont: 'Rubik Doodle Shadow', sans-serif;
+  --headerfont: 'Rubik Doodle Shadow', sans-serif;
   --mainfont: 'Titillium Web', sans-serif;
+  --titlefont: 'Special Elite', cursive;
   font-family: var(--mainfont);
 }
 
-
-
 .title {
-  font-family: var(--titlefont);
+  font-family: var(--headerfont);
   font-size: 4rem;
   color: white;
   letter-spacing: .5rem;
@@ -24,7 +23,7 @@
 
 .forminput>label {
   text-align: right;
-  text-wrap: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .forminput {
@@ -61,4 +60,30 @@
 
 .loginbtn:hover {
   font-weight: bolder;
+}
+
+/* HomePage */
+.mainbar {
+  top: 5.5rem;
+}
+
+.mainheader {
+  top: 5.5rem;
+}
+
+.maintitle {
+  height: 5.5rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  font-family: var(--headerfont);
+  font-size: 3rem;
+  letter-spacing: .5rem;
+  background-color: grey;
+  padding: 0.5rem 5rem;
+}
+
+.postctn {
+  margin-top: 6rem;
 }

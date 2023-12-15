@@ -83,7 +83,7 @@ function Form() {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           className="flex-grow resize-none overflow-hidden p-4 text-lg outline-none"
-          placeholder="Boost your boulder!">
+          placeholder="Where are you climbing?">
         </textarea>
       </div>
       <Button className="self-end">Post</Button>

@@ -22,8 +22,9 @@ const Home: NextPage = () => {
       {session.status === "authenticated"
         ?
         <>
-          <header className="sticky top-0  z-10 border-b p-2 bg-white">
-            <div className=" m-2 ">Home</div>
+          <div className="maintitle ">BoulderBuddy</div>
+          <header className="mainheader sticky z-10 border-b p-2 bg-white">
+
 
             <div className="flex">{Tabs.map((tab) => {
               return (
@@ -42,12 +43,14 @@ const Home: NextPage = () => {
             })}
             </div>
           </header>
-          <NewPostForm />
+          <div className="postctn">
+            <NewPostForm />
 
-          {selectedTab === "Recent"
-            ? <RecentPosts />
-            : <FollowingPosts />
-          }
+            {selectedTab === "Recent"
+              ? <RecentPosts />
+              : <FollowingPosts />
+            }
+          </div>
         </>
         :
         <>
