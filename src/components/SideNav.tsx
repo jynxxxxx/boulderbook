@@ -3,16 +3,18 @@ import Link from "next/link";
 import { IconHoverEffect } from "./IconHover";
 import { VscAccount, VscHome, VscSignOut, VscSignIn } from "react-icons/vsc";
 import { SignUpForm } from "./SignUpForm";
+import { LoadingSpinner } from "~/components/LoadingSpinner"
 
 export function SideNav() {
   const session = useSession()
 
   const user = session.data?.user
-  // console.log(user)
-  console.log(user)
 
   console.log("Session:", session);
 
+  if (session.status === "loading") {
+    return <LoadingSpinner />
+  }
 
   return (
 
