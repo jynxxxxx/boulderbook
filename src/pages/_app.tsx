@@ -7,7 +7,7 @@ import Head from "next/head";
 
 import "~/styles/globals.css";
 import { SideNav } from "~/components/SideNav";
-import '../styles/signup.css'
+import '../styles/vanilla.css'
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -19,13 +19,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <title>BoulderBook</title>
         <meta
           name="description"
-          content="This is a Facebook Clone by Julia Kim">
+          content="This is a Social Media Clone by Julia Kim">
         </meta>
-        <link rel="icon" href="/favicon.ico" />
+
       </Head>
       <div className="masterctn mx-auto flex items-start sm:pr-4">
         <SideNav />
-        <div className="min-h-screen flex-grow border-x">
+        <div className="min-h-screen flex-grow ">
           <Component {...pageProps} />
         </div>
       </div>

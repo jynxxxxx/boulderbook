@@ -64,9 +64,9 @@ export function SignUpForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className="formdiv flex flex-col items-center justify-center w-full">
       <form
-        className="flex flex-col gap-2 min-w-min w-full"
+        className="flex flex-col gap-3 min-w-min w-full"
         onSubmit={handleSubmit}>
         <div className="forminput">
           <label htmlFor="firstname">First Name:</label>
@@ -93,7 +93,7 @@ export function SignUpForm() {
           <input type="password" name="checkPassword" value={formData.checkPassword} onChange={handleChange} />
         </div>
 
-        <Button className="w-4/5 m-auto">
+        <Button className="mt-2 w-4/5 m-auto">
           Sign Up
         </Button>
       </form>

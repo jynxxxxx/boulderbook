@@ -1,0 +1,64 @@
+:root {
+  --titlefont: 'Rubik Doodle Shadow', sans-serif;
+  --mainfont: 'Titillium Web', sans-serif;
+  font-family: var(--mainfont);
+}
+
+
+
+.title {
+  font-family: var(--titlefont);
+  font-size: 4rem;
+  color: white;
+  letter-spacing: .5rem;
+}
+
+/* Sign Up Form */
+.forminput>input {
+  border: 2px gray solid;
+  border-radius: 12px;
+  align-self: right;
+  margin-right: 10%;
+  padding: 0 8px;
+}
+
+.forminput>label {
+  text-align: right;
+  text-wrap: nowrap;
+}
+
+.forminput {
+  display: grid;
+  grid-template-columns: 35% 1fr;
+  gap: 1rem;
+}
+
+.signupdiv {
+  background-color: #D9E7E7;
+  margin-top: 15vh;
+  width: 80%;
+  margin-left: auto;
+  border-radius: 12px;
+}
+
+
+/* Signup HomePage */
+.mainbg {
+  height: 100vh;
+  background-image: url(/boulder.jpg);
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.header {
+  height: 10vh;
+  position: absolute;
+  top: 2%;
+  left: 10%;
+  background-color: black;
+}
+
+.loginbtn:hover {
+  font-weight: bolder;
+}

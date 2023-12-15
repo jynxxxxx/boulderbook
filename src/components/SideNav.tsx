@@ -16,57 +16,63 @@ export function SideNav() {
 
   return (
 
-    <nav className="sticky top-0 px-2 py-4 w-1/4 h-full">
+    <>
       {session.status === "authenticated"
         ?
-        <ul className="flex flex-col items-start gap-2 whitespace-nowrap ">
-          <li>
-            <Link href="/">
-              <IconHoverEffect>
-                <span className="flex items-center gap-4">
-                  <VscHome className="h-8 w-8" />
-                  <span className="hidden text-lg md:inline">Home</span>
-                </span>
-              </IconHoverEffect>
-            </Link>
-          </li>
-          {user != null && <li>
-            <Link href={`/profiles/${user.id}`}>
-              <IconHoverEffect>
-                <span className="flex items-center gap-4">
-                  <VscAccount className="h-8 w-8" />
-                  <span className="hidden text-lg md:inline">Profile</span>
-                </span>
-              </IconHoverEffect>
-            </Link>
-          </li>}
-          <li>
-            <button onClick={() => void signOut()}>
-              <IconHoverEffect>
-                <span className="flex items-center gap-4">
-                  <VscSignOut className="h-8 w-8 fill-red-700" />
-                  <span className="hidden text-lg md:inline text-red-700">Logout</span>
-                </span>
-              </IconHoverEffect>
-            </button>
-          </li>
-        </ul>
-        : <>
-
-          <SignUpForm />
-          <div className="w-full flex flex-col items-end mr-16">
-            <div className="text-gray-500">Already a member?</div>
-            <button onClick={() => void signIn()}>
-              <IconHoverEffect>
-                <span className="flex items-center gap-4 ">
-                  <VscSignIn className="h-8 w-8 " />
-                  <span className="hidden text-lg md:inline ">Login</span>
-                </span>
-              </IconHoverEffect>
-            </button>
+        <nav className="sticky top-0 px-2 py-4 min-w-1/4 w-1/3 h-full border-x">
+          <ul className="flex flex-col items-start gap-2 whitespace-nowrap ">
+            <li>
+              <Link href="/">
+                <IconHoverEffect>
+                  <span className="flex items-center gap-4">
+                    <VscHome className="h-8 w-8" />
+                    <span className="hidden text-lg md:inline">Home</span>
+                  </span>
+                </IconHoverEffect>
+              </Link>
+            </li>
+            {user != null && <li>
+              <Link href={`/profiles/${user.id}`}>
+                <IconHoverEffect>
+                  <span className="flex items-center gap-4">
+                    <VscAccount className="h-8 w-8" />
+                    <span className="hidden text-lg md:inline">Profile</span>
+                  </span>
+                </IconHoverEffect>
+              </Link>
+            </li>}
+            <li>
+              <button onClick={() => void signOut()}>
+                <IconHoverEffect>
+                  <span className="flex items-center gap-4">
+                    <VscSignOut className="h-8 w-8 fill-red-700" />
+                    <span className="hidden text-lg md:inline text-red-700">Logout</span>
+                  </span>
+                </IconHoverEffect>
+              </button>
+            </li>
+          </ul>
+        </nav>
+        :
+        <nav className="sticky top-0 px-2 py-4 w-1/3 min-w-1/4 min-h-screen bg-black ">
+          <div className="signupdiv p-4 ">
+            <div className="m-5 text-center"> Sign Up </div>
+            <SignUpForm />
+            <div className="w-full flex flex-col items-end mr-16 mt-16 ">
+              <div className="text-gray-500">Already a member?</div>
+              <button onClick={() => void signIn()}>
+                <IconHoverEffect>
+                  <span className="flex items-center gap-4 ">
+                    <VscSignIn className="h-8 w-8 " />
+                    <span className="loginbtn hidden text-lg md:inline ">Login</span>
+                  </span>
+                </IconHoverEffect>
+              </button>
+            </div>
           </div>
-        </>
+        </nav>
+
       }
-    </nav>
+    </>
   )
 }

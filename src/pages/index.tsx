@@ -7,6 +7,7 @@ import { api } from "~/utils/api"
 
 const Tabs = ["Recent", "Following"] as const
 
+
 const Home: NextPage = () => {
   const session = useSession()
   const [selectedTab, setSelectedTab] = useState<(typeof Tabs)[number]>("Recent")
@@ -16,8 +17,8 @@ const Home: NextPage = () => {
       {session.status === "authenticated"
         ?
         <>
-          <header className="sticky top-0 z-10 border-b pt-2 bg-white">
-            <div className="header mb-2">Home</div>
+          <header className="sticky top-0  z-10 border-b p-2 bg-white">
+            <div className="header m-2 ">Home</div>
 
             <div className="flex">{Tabs.map((tab) => {
               return (
@@ -45,10 +46,13 @@ const Home: NextPage = () => {
         </>
         :
         <>
-          <header className="sticky top-0 z-10 border-b pt-2">
-            <div className="header mb-2">Home</div>
+          <header className="header">
+            <div className="title m-2">BoulderBuddy</div>
           </header>
-          <RecentPosts />
+          <div className="mainbg">
+
+          </div>
+
         </>
       }
     </>
