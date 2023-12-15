@@ -19,7 +19,7 @@ export function SideNav() {
     <>
       {session.status === "authenticated"
         ?
-        <nav className="sticky top-0 px-2 py-4 min-w-1/4 w-1/3 h-full border-x">
+        <nav className="sticky top-0 px-2 py-4 w-1/5 h-full border-x">
           <ul className="flex flex-col items-start gap-2 whitespace-nowrap ">
             <li>
               <Link href="/">

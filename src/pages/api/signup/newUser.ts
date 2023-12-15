@@ -20,16 +20,16 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
 
     const existingEmail = await db.user.findUnique({ where: { email: email } });
     if (existingEmail) {
-      return res.status(409).json("This email is already in use");
+      return res.status(409).json({ msg: "This email is already in use" });
     }
 
     const existingUsername = await db.user.findUnique({ where: { name: username } });
     if (existingUsername) {
-      return res.status(409).json("This username is already in use");
+      return res.status(409).json({ msg: "This username is already in use" });
     }
 
     if (password !== checkPassword) {
-      return res.status(409).json("Passwords do not match");
+      return res.status(409).json({ msg: "Passwords do not match" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);

@@ -1,6 +1,8 @@
 import { Button } from "./Button"
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { signIn } from "next-auth/react";
+
 
 
 type FormData = {
@@ -13,6 +15,8 @@ type FormData = {
 };
 
 export function SignUpForm() {
+  const [errorMessage, setErrorMessage] = useState<string | null>("");
+
   const [formData, setFormData] = useState<FormData>({
     firstname: "",
     lastname: "",
@@ -31,9 +35,9 @@ export function SignUpForm() {
     }));
   };
 
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
 
     try {
       const response = await fetch("/api/signup/newUser", {
@@ -45,13 +49,20 @@ export function SignUpForm() {
       });
 
       if (!response.ok) {
-        const errorMessage = await response.text();
-        console.error("Failed to sign up:", errorMessage);
-        throw new Error("Failed to sign up");
+        const errorData = await response.json();
+        const errormsg = errorData.msg || "Failed to sign up";
+        setErrorMessage(errormsg as string);
+        return;
       }
 
       const user = await response.json();
       console.log("Signed up successfully", user);
+      await signIn('credentials', {
+        redirect: false,
+        username: formData.username,
+        password: formData.password,
+      });
+
       return {
         user,
         redirect: {
@@ -70,7 +81,7 @@ export function SignUpForm() {
         onSubmit={handleSubmit}>
         <div className="forminput">
           <label htmlFor="firstname">First Name:</label>
-          <input type="text" name="firstname" value={formData.firstname} onChange={handleChange} />
+          <input type="text" name="firstname" value={formData.firstname} onChange={handleChange} required />
         </div>
         <div className="forminput">
           <label htmlFor="lastname">Last Name:</label>
@@ -78,25 +89,30 @@ export function SignUpForm() {
         </div>
         <div className="forminput">
           <label htmlFor="email">Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
         </div>
         <div className="forminput">
           <label htmlFor="username">Username:</label>
-          <input type="text" name="username" value={formData.username} onChange={handleChange} />
+          <input type="text" name="username" value={formData.username} onChange={handleChange} required />
         </div>
         <div className="forminput">
           <label htmlFor="password">Password:</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} />
+          <input type="password" name="password" value={formData.password} onChange={handleChange} required />
         </div>
         <div className="forminput">
           <label htmlFor="password">Confirm Password:</label>
-          <input type="password" name="checkPassword" value={formData.checkPassword} onChange={handleChange} />
+          <input type="password" name="checkPassword" value={formData.checkPassword} onChange={handleChange} required />
         </div>
 
         <Button className="mt-2 w-4/5 m-auto">
           Sign Up
         </Button>
       </form>
+      {errorMessage && (
+        <div className="errormsg text-red-500 mt-2">
+          {errorMessage}
+        </div>
+      )}
     </div>
   );
 }
