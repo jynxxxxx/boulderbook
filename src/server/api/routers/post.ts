@@ -171,6 +171,7 @@ async function GetAllPosts({
         id: post.id,
         content: post.content,
         createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
         likeCount: post._count.likes,
         user: post.user,
         likedByMe: post.likes?.length > 0 ?? false,

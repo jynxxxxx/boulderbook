@@ -8,6 +8,7 @@ import { api } from "~/utils/api"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { useState } from "react"
 import { EditPostForm } from "./EditPostForm"
+import { create } from "domain"
 
 type Post = {
   id: string,
@@ -206,8 +207,8 @@ function PostCard({ id, content, createdAt, updatedAt, likeCount, likedByMe, use
           </Link>
           <span className="text-gray-500">-</span>
           <span className="text-gray-500">{dateTimeFormatter.format(createdAt)}</span>
-          {updatedAt &&
-            <span className="text-gray-500">Edited: {dateTimeFormatter.format(updatedAt)}</span>}
+          {updatedAt && dateTimeFormatter.format(updatedAt) !== dateTimeFormatter.format(createdAt) &&
+            <span className="text-gray-500 text-xs ml-6 pt-1.5">(Edited: {dateTimeFormatter.format(updatedAt)})</span>}
         </div>
         <p className="whitespace-pre-wrap">{content}</p>
         <HeartButton
