@@ -39,11 +39,25 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   })
 
   if (!profile) {
-    return <LoadingSpinner />
+    return (
+      <>
+        <Link href="/">
+          <div className="maintitle ">BoulderBuddy</div>
+        </Link>
+        <LoadingSpinner />
+      </>
+    )
   }
 
   if (profile.name == null) {
-    return <ErrorPage statusCode={404} />
+    return (
+      <>
+        <Link href="/">
+          <div className="maintitle ">BoulderBuddy</div>
+        </Link>
+        <ErrorPage statusCode={404} />
+      </>
+    )
   }
 
   return (
@@ -51,15 +65,18 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       <Head>
         <title>{`BoulderBook - ${profile.name}`}</title>
       </Head>
-      <div className="min-h-screen flex-grow border-x">
-        <header className="sticky top-0 z-10 flex items-center border-b bg-white px-4 py-2">
+      <Link href="/">
+        <div className="maintitle ">BoulderBuddy</div>
+      </Link>
+      <div className=" min-h-screen flex-grow">
+        <header className=" profileheader sticky top-0 z-10 flex items-center border-b bg-white px-4 py-2 h-24">
           <Link href=".." className="mr-2">
             <IconHoverEffect>
               <VscArrowLeft className="h-6 w-6" />
             </IconHoverEffect>
           </Link>
           <ProfileImage src={profile.image} className="flex-shrink-0" />
-          <div className="ml-2 flex-grow">
+          <div className="ml-3 flex-grow gap-3">
             <h1 className="text-lg font-bold"> {profile.name} </h1>
             <div className="text-gray-500">
               {profile.postsCount}{" "}
@@ -75,15 +92,16 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             userId={id}
             onClick={() => toggleFollow.mutate({ userId: id })} />
         </header>
-        <main>
+        <div className="profilepostctn">
           <AllPosts
             posts={posts.data?.pages.flatMap((page) => page.posts)}
             isError={posts.isError}
             isLoading={posts.isLoading}
             hasMore={posts.hasNextPage ?? false}
             fetchNewPosts={posts.fetchNextPage}
+            customHeight={'calc(100vh - 10.5rem)'}
           />
-        </main>
+        </div>
       </div>
     </>
   )

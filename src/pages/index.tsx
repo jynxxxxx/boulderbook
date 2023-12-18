@@ -5,7 +5,7 @@ import { AllPosts } from "~/components/AllPosts"
 import { LoadingSpinner } from "~/components/LoadingSpinner"
 import { NewPostForm } from "~/components/NewPostForm"
 import { api } from "~/utils/api"
-
+import Link from "next/link"
 const Tabs = ["Recent", "Following"] as const
 
 
@@ -22,17 +22,19 @@ const Home: NextPage = () => {
       {session.status === "authenticated"
         ?
         <>
-          <div className="maintitle ">BoulderBuddy</div>
-          <header className="mainheader sticky z-10 border-b p-2 bg-white">
+          <Link href="/">
+            <div className="maintitle ">BoulderBuddy</div>
+          </Link>
+          <header className="mainheader sticky z-10 border-b pt-2 pr-2 pl-2 bg-white">
 
 
-            <div className="flex">{Tabs.map((tab) => {
+            <div className="bg-white flex">{Tabs.map((tab) => {
               return (
                 <button
                   key={tab}
-                  className={`flex-grow p-2 hover:bg-gray-200 focus-visible:bg-gray-200 
+                  className={`label text-xl flex-grow p-2 hover:bg-gray-200 focus-visible:bg-gray-200 
                   ${tab === selectedTab
-                      ? "border-b-4 border-b-blue-500 font-bold"
+                      ? "border-b-8 border-b-blue-500 font-bold"
                       : ""
                     }`}
                   onClick={() => setSelectedTab(tab)}
@@ -43,9 +45,11 @@ const Home: NextPage = () => {
             })}
             </div>
           </header>
-          <div className="postctn">
-            <NewPostForm />
 
+          <div className="postform fixed z-10 border-y">
+            <NewPostForm />
+          </div>
+          <div className="postctn">
             {selectedTab === "Recent"
               ? <RecentPosts />
               : <FollowingPosts />
@@ -81,6 +85,7 @@ function RecentPosts() {
       isLoading={posts.isLoading}
       hasMore={posts.hasNextPage ?? false}
       fetchNewPosts={posts.fetchNextPage}
+      customHeight={'calc(100vh - 17rem)'}
     />
   )
 }
@@ -98,6 +103,7 @@ function FollowingPosts() {
       isLoading={posts.isLoading}
       hasMore={posts.hasNextPage ?? false}
       fetchNewPosts={posts.fetchNextPage}
+      customHeight={'calc(100vh - 17rem)'}
     />
   )
 }

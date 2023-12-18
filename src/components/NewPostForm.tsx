@@ -86,7 +86,7 @@ function Form() {
           placeholder="Where are you climbing?">
         </textarea>
       </div>
-      <Button className="self-end">Post</Button>
+      <Button className="self-end mr-16">Post</Button>
     </form>
   )
 }

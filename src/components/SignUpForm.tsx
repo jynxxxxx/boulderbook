@@ -104,7 +104,7 @@ export function SignUpForm() {
           <input type="password" name="checkPassword" value={formData.checkPassword} onChange={handleChange} required />
         </div>
 
-        <Button className="mt-2 w-4/5 m-auto">
+        <Button className="mt-2 w-4/5 m-auto tracking-widest">
           Sign Up
         </Button>
       </form>

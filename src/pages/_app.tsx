@@ -24,7 +24,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         </meta>
 
       </Head>
-      <div className="masterctn mx-auto flex items-start sm:pr-4">
+      <div className="masterctn min-h-screen mx-auto flex items-start ">
         <SideNav />
         <div className="min-h-screen flex-grow ">
           <Component {...pageProps} />

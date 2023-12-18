@@ -22,24 +22,26 @@ type AllPostsProps = {
   hasMore: boolean
   fetchNewPosts: () => Promise<unknown>
   posts: Post[] | undefined
+  customHeight: string;
 }
 
 
 
-export function AllPosts({ posts, isError, isLoading, hasMore, fetchNewPosts }: AllPostsProps) {
+export function AllPosts({ posts, isError, isLoading, hasMore, fetchNewPosts, customHeight }: AllPostsProps) {
   if (isLoading) return <h1><LoadingSpinner /></h1>
   if (isError) return <h1>Error</h1>
 
   if (posts?.length == 0 || posts == null) {
-    return <h2> No Posts </h2>
+    return <h2 className="p-16 text-center mt-16 text-2xl" style={{ height: customHeight }}> No Posts </h2>
   }
 
-  return <ul>
+  return <ul className="scrollctn">
     <InfiniteScroll
       dataLength={posts.length}
       next={fetchNewPosts}
       hasMore={hasMore}
       loader={<LoadingSpinner />}
+      style={{ height: customHeight }}
     >
       {posts?.map(post => (
         <PostCard key={post.id} {...post} />
