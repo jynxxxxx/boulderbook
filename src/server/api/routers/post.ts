@@ -77,8 +77,53 @@ export const postRouter = createTRPCRouter({
         });
         return { addedLike: false };
       }
-    })
+    }),
+  editPost: protectedProcedure
+    .input(z.object({ postId: z.string(), content: z.string().min(1) }))
+    .mutation(async ({ input: { postId, content }, ctx }) => {
+      const post = await ctx.db.post.findUnique({
+        where: { id: postId },
+      });
+
+      if (!post) {
+        throw new Error("Post not found");
+      }
+
+      if (post.userId !== ctx.session.user.id) {
+        throw new Error("You don't have permission to edit this post");
+      }
+
+      const updatedPost = await ctx.db.post.update({
+        where: { id: postId },
+        data: {
+          content,
+          updatedAt: new Date()
+        },
+      });
+
+      return { updatedPost };
+    }),
+  deletePost: protectedProcedure
+    .input(z.object({ postId: z.string() }))
+    .mutation(async ({ input: { postId }, ctx }) => {
+      const post = await ctx.db.post.findUnique({
+        where: { id: postId },
+      });
+
+      if (!post) {
+        throw new Error("Post not found");
+      }
+
+      if (post.userId !== ctx.session.user.id) {
+        throw new Error("You don't have permission to delete this post");
+      }
+
+      await ctx.db.post.delete({ where: { id: postId } });
+
+      return { success: true, postId, userId: post.userId };
+    }),
 });
+
 
 
 async function GetAllPosts({
@@ -102,6 +147,7 @@ async function GetAllPosts({
       id: true,
       content: true,
       createdAt: true,
+      updatedAt: true,
       _count: { select: { likes: true } },
       likes:
         currentUserId == null ? false : { where: { userId: currentUserId } },

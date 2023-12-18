@@ -98,3 +98,4 @@ export function NewPostForm() {
 
   return <Form />
 }
+

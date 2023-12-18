@@ -20,6 +20,34 @@
   font-family: var(--labelfont);
 }
 
+.ellipsis {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.btnctn {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  position: absolute;
+  top: 2rem;
+  right: 1.2rem;
+  border: lightgray 1px solid;
+  border-radius: 18px;
+}
+
+.btn {
+  width: 100%;
+}
+
+.ellipsis:hover {
+  background-color: lightgray;
+  border-radius: 6px;
+}
+
 /* Sign Up Form */
 .forminput>input {
   border: 2px gray solid;

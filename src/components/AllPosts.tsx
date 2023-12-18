@@ -2,17 +2,20 @@ import Link from "next/link"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { ProfileImage } from "./ProfileImage"
 import { useSession } from "next-auth/react"
-import { VscHeart, VscHeartFilled } from "react-icons/vsc"
+import { VscEllipsis, VscHeart, VscHeartFilled } from "react-icons/vsc"
 import { IconHoverEffect } from "./IconHover"
 import { api } from "~/utils/api"
 import { LoadingSpinner } from "./LoadingSpinner"
+import { useState } from "react"
+import { EditPostForm } from "./EditPostForm"
 
 type Post = {
   id: string,
   content: string,
   createdAt: Date,
-  likeCount: number
-  likedByMe: boolean
+  updatedAt: Date,
+  likeCount: number,
+  likedByMe: boolean,
   user: { id: string; image: string | null; name: string | null }
 }
 
@@ -25,8 +28,6 @@ type AllPostsProps = {
   customHeight: string;
 }
 
-
-
 export function AllPosts({ posts, isError, isLoading, hasMore, fetchNewPosts, customHeight }: AllPostsProps) {
   if (isLoading) return <h1><LoadingSpinner /></h1>
   if (isError) return <h1>Error</h1>
@@ -34,6 +35,74 @@ export function AllPosts({ posts, isError, isLoading, hasMore, fetchNewPosts, cu
   if (posts?.length == 0 || posts == null) {
     return <h2 className="p-16 text-center mt-16 text-2xl" style={{ height: customHeight }}> No Posts </h2>
   }
+
+  const session = useSession()
+  const [selectedPostId, setSelectedPostId] = useState("");
+  const [showButtons, setShowButtons] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const trcpUtils = api.useUtils();
+
+  const handleEllipsisClick = (postId: string) => {
+    !selectedPostId ? setSelectedPostId(postId) : setSelectedPostId("");
+    !showButtons ? setShowButtons(true) : setShowButtons(false);
+    setIsEditing(false); // Close editing when ellipsis is clicked
+  }
+
+  const handleEditPost = (postId: string) => {
+    setShowButtons(false)
+    setSelectedPostId(postId);
+    setIsEditing(true); // Open the editing state
+  };
+
+  const handleDeletePost = (postId: string) => {
+    setShowButtons(false)
+
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      deletePost.mutate({ postId });
+      setSelectedPostId("")
+    }
+  };
+
+  const deletePost = api.post.deletePost.useMutation({
+    onSuccess: async ({ postId, userId }) => {
+      const deletedPostId = postId;
+
+      trcpUtils.post.infiniteFeed.setInfiniteData({}, (oldData) => {
+        if (!oldData?.pages[0]) return oldData;
+
+        const updatedPostList = {
+          ...oldData,
+          pages: [
+            {
+              ...oldData.pages[0],
+              posts: oldData.pages[0].posts.filter((post) => post.id !== deletedPostId),
+            },
+            ...oldData.pages.slice(1),
+          ],
+        };
+
+        return updatedPostList;
+      });
+
+      trcpUtils.post.infiniteProfileFeed.setInfiniteData({ userId: userId }, (oldData) => {
+        if (!oldData?.pages[0]) return oldData;
+
+        const updatedPostList = {
+          ...oldData,
+          pages: [
+            {
+              ...oldData.pages[0],
+              posts: oldData.pages[0].posts.filter((post) => post.id !== deletedPostId),
+            },
+            ...oldData.pages.slice(1),
+          ],
+        };
+
+        return updatedPostList;
+      });
+    },
+  });
+
 
   return <ul className="scrollctn">
     <InfiniteScroll
@@ -44,7 +113,33 @@ export function AllPosts({ posts, isError, isLoading, hasMore, fetchNewPosts, cu
       style={{ height: customHeight }}
     >
       {posts?.map(post => (
-        <PostCard key={post.id} {...post} />
+        <div key={post.id} className="relative">
+          {session?.data?.user.id === post.user?.id &&
+            <VscEllipsis className="ellipsis" style={{ transform: 'rotate(90deg)' }} onClick={() => handleEllipsisClick(post.id)} />
+          }
+          {session?.data?.user.id === post.user?.id && showButtons && (
+            <div className="btnctn">
+              <IconHoverEffect additionalClasses="btn ">
+                <button className="text-right text-sm w-full" onClick={() => handleEditPost(post.id)}>Edit</button>
+              </IconHoverEffect>
+              <IconHoverEffect additionalClasses="btn">
+                <button className="text-right text-sm w-full" onClick={() => handleDeletePost(post.id)}>Delete</button>
+              </IconHoverEffect>
+
+            </div>
+          )}
+
+          {selectedPostId === post.id && isEditing ? (
+            // Assuming you have an EditPostForm component
+            <EditPostForm
+              postId={post.id}
+              initialContent={post.content}
+              onClose={() => { setSelectedPostId(""), setIsEditing(false) }}
+            />
+          ) : (
+            <PostCard {...post} />
+          )}
+        </div>
       ))}
     </InfiniteScroll>
   </ul>
@@ -56,7 +151,7 @@ const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
   day: "numeric",
 });
 
-function PostCard({ id, content, createdAt, likeCount, likedByMe, user }: Post) {
+function PostCard({ id, content, createdAt, updatedAt, likeCount, likedByMe, user }: Post) {
   const trcpUtils = api.useUtils()
   const togglePostLike = api.post.togglePostLike.useMutation(
     {
@@ -111,6 +206,8 @@ function PostCard({ id, content, createdAt, likeCount, likedByMe, user }: Post) 
           </Link>
           <span className="text-gray-500">-</span>
           <span className="text-gray-500">{dateTimeFormatter.format(createdAt)}</span>
+          {updatedAt &&
+            <span className="text-gray-500">Edited: {dateTimeFormatter.format(updatedAt)}</span>}
         </div>
         <p className="whitespace-pre-wrap">{content}</p>
         <HeartButton
