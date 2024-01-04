@@ -66,7 +66,7 @@ export function SideNav() {
             <div className="label font-bold m-5 text-center text-xl"> Sign Up </div>
             <SignUpForm />
             <div className="w-full flex flex-col items-end mr-16 mt-16 ">
-              <div className="text-gray-500">Already a member?</div>
+              <div className="text-gray-500">Already a buddy or a Discord member?</div>
               <button onClick={() => void signIn()}>
                 <IconHoverEffect>
                   <span className="flex items-center gap-4 ">
