@@ -61,7 +61,7 @@ export function SideNav() {
           </div>
         </>
         :
-        <nav className="sticky top-0 px-2 py-4 w-1/3 min-w-1/4 min-h-screen bg-black ">
+        <nav className="sticky top-0 px-2 py-4 w-2/5 min-w-1/3 min-h-screen bg-black ">
           <div className="signupdiv p-4 ">
             <div className="label font-bold m-5 text-center text-xl"> Sign Up </div>
             <SignUpForm />
